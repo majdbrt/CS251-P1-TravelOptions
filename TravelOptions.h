@@ -109,6 +109,18 @@ class TravelOptions{
     static Relationship compare(double priceA, double timeA, 
  					double priceB, double timeB) {
 
+      if(priceA == priceB && timeA == timeB){
+        return equal;
+      }// if
+
+      else if(priceA < priceB && timeA < timeB){
+        return better;
+      }// else if
+      
+      else if(priceB < priceA && timeB < timeA){
+        return worse;
+      }// else if
+
       return incomparable;  // placeholder
 
     }
