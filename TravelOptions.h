@@ -236,7 +236,22 @@ class TravelOptions{
     * status: TODO
     */
     bool is_sorted()const{
-	return false;
+      Node* cur = front;
+
+      while(cur->next->next != nullptr){
+
+        if(cur->price > cur->next->price ){
+          return false;
+        }// if
+        else if(cur->price == cur->next->price && cur->time > cur->next->time){
+          return false;
+        }// else if
+
+        cur = cur->next;
+      }// while
+
+
+	    return true;
 
     }
 
