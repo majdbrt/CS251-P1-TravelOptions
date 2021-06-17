@@ -144,6 +144,26 @@ class TravelOptions{
        }
        return compare(a->price, a->time, b->price, b->time);
     }
+
+    bool dublicate_OR_Dominated(Node* a) const{
+      if(a == nullptr || a->next == nullptr)
+        return false;
+
+      Node* cur = a->next;
+      while(cur != nullptr){
+        if(a->price == cur->price && a->time == cur->time){
+          return true;
+        }// if
+
+        if(compare(a, cur) == worse){
+          return true;
+        }// if
+
+        cur = cur->next;
+      }// while
+
+      return false;
+    }// dublicate_exist
     
   public:
     
@@ -236,6 +256,7 @@ class TravelOptions{
     * status: TODO
     */
     bool is_sorted()const{
+      
       Node* cur = front;
 
       while(cur->next->next != nullptr){
@@ -249,7 +270,6 @@ class TravelOptions{
 
         cur = cur->next;
       }// while
-
 
 	    return true;
 
@@ -275,7 +295,14 @@ class TravelOptions{
     * REMEMBER:  the list does not need to be sorted in order to be pareto
     */
     bool is_pareto() const{
-	return false;
+      Node* cur = front;
+
+      while(cur != nullptr){
+        if(dublicate_OR_Dominated(cur))
+          return false;
+        cur = cur->next;
+      }
+	return true;
 
     }
 
