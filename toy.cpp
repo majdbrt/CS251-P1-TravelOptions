@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-// using namespace std;
+using namespace std;
 
 /*
  simple demo program exercising some of the TravelOptions functions.
@@ -69,17 +69,19 @@ int main(int argc, char *argv[]){
   else 
      std::cout << "NOT PARETO-SORTED" << std::endl;
 
-  if(options_p->insert_sorted(22.0, 9.7))
+   cout<<"hello" << endl;
+  if(options_p->insert_sorted(6.0, 13.0))
      std::cout << "INSERT_SORTED WORKED!" << std::endl;
-
+options_p->display();
+cout<<"bye" << endl;
   if(options_p->insert_pareto_sorted(21.0, 9.7))
      std::cout << "INSERT_PARETO_SORTED WORKED!" << std::endl;
-
+cout << 1 << endl;
   options_p3= options_p->union_pareto_sorted(*options_p2);
-
+cout << 1 << endl;
   if(options_p3->prune_sorted())
      std::cout << "prune_sorted worked!" << std::endl;
-
+cout << 2 << endl;
   delete options_p3;
 
   options_p3 = options_p->join_plus_plus(*options_p2);
