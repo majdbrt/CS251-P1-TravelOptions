@@ -332,14 +332,29 @@ class TravelOptions{
 
     */
     bool is_pareto_sorted() const{
-      Node* cur = front;
-      while(cur->next->next != nullptr){
-        if(cur->price > cur->next->price || cur->time < cur->next->time)
-          return false;
-      }// while
-	return true;
+      
+      if(front == nullptr)
+        return true;
 
-    }
+      Node* cur = front;
+      Node* prev = nullptr;
+      while(cur != nullptr){
+        if(prev == nullptr);
+
+        else{
+          if(prev->price >= cur->price)
+            return false;
+
+          else if(prev->time <= cur->time)
+            return false;
+        }// else
+
+        prev = cur;
+        cur = cur->next;
+      }// while
+
+	    return true;
+    }// is_pareto_sorted
 
     /**
      * func: insert_sorted

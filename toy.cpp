@@ -20,9 +20,8 @@ int main(int argc, char *argv[]){
   TravelOptions *options_p, *options_p2, *options_p3;
 
   std::vector<std::pair<double, double>>
-	vec{ {1, 7}, {2, 8}, {2, 9}, 
-		{3, 5}, {5, 8}, {5, 8}, 
-		{5, 9}, {6, 12} };
+	vec{ {1, 7}, {2, 6}, {2, 5}, 
+		{4, 4}, {5, 3} };
 
   std::vector<std::pair<double, double>> *vec2;
 
