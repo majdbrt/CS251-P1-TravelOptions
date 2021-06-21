@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-using namespace std;
+// using namespace std;
 
 /*
  simple demo program exercising some of the TravelOptions functions.
@@ -20,8 +20,9 @@ int main(int argc, char *argv[]){
   TravelOptions *options_p, *options_p2, *options_p3;
 
   std::vector<std::pair<double, double>>
-	vec{ {1, 7}, {2, 6}, {2, 5}, 
-		{4, 4}, {5, 3} };
+	vec{ {1, 9}, {2,  8}, {3, 9}, 
+		{4, 6}, {5, 5}, {6, 4}, 
+		{7, 3}, {8, 2} };
 
   std::vector<std::pair<double, double>> *vec2;
 
@@ -68,19 +69,17 @@ int main(int argc, char *argv[]){
   else 
      std::cout << "NOT PARETO-SORTED" << std::endl;
 
-   cout<<"hello" << endl;
-  if(options_p->insert_sorted(6.0, 13.0))
+  if(options_p->insert_sorted(22.0, 9.7))
      std::cout << "INSERT_SORTED WORKED!" << std::endl;
-options_p->display();
-cout<<"bye" << endl;
+
   if(options_p->insert_pareto_sorted(21.0, 9.7))
      std::cout << "INSERT_PARETO_SORTED WORKED!" << std::endl;
-cout << 1 << endl;
+
   options_p3= options_p->union_pareto_sorted(*options_p2);
-cout << 1 << endl;
+
   if(options_p3->prune_sorted())
      std::cout << "prune_sorted worked!" << std::endl;
-cout << 2 << endl;
+
   delete options_p3;
 
   options_p3 = options_p->join_plus_plus(*options_p2);

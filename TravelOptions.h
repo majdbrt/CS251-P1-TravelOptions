@@ -113,11 +113,12 @@ class TravelOptions{
         return equal;
       }// if
 
-      else if(priceA < priceB && timeA < timeB){
+      else if(priceA <= priceB && timeA <= timeB){
         return better;
       }// else if
       
-      else if(priceB < priceA && timeB < timeA){
+      else if(priceA >= priceB && timeA >= timeB){
+
         return worse;
       }// else if
 
@@ -151,14 +152,16 @@ class TravelOptions{
 
       Node* cur = a->next;
       while(cur != nullptr){
-        if(a->price == cur->price && a->time == cur->time){
+      
+        
+        if(compare(a, cur) == equal ||compare(a, cur) == worse ||compare(a, cur) == better){
           return true;
         }// if
-
-        if(compare(a, cur) == worse){
+        
+ /*
+        if(a->price >= cur->price && a->time >= cur->time)
           return true;
-        }// if
-
+*/
         cur = cur->next;
       }// while
 
@@ -307,10 +310,27 @@ class TravelOptions{
       Node* cur = front;
 
       while(cur != nullptr){
+        
         if(dublicate_OR_Dominated(cur))
           return false;
+          
+         /*
+         Node* temp = cur->next;
+         Node* target = cur;
+         while(temp != nullptr){
+           if (target->price == temp->price && target->time == temp->time)
+            return false;
+          
+          if(target->price >= temp->price && target->time >= temp->time)
+            return false;
+          if(target->price <= temp->price && target->time <= temp->time )
+            return false;
+
+          temp = temp->next;
+         }// while
+         */
         cur = cur->next;
-      }
+      }// while
 	return true;
 
     }
@@ -332,24 +352,19 @@ class TravelOptions{
 
     */
     bool is_pareto_sorted() const{
-      
-      if(front == nullptr)
+
+      if(_size == 0)
         return true;
-
+//int i = 0;
       Node* cur = front;
-      Node* prev = nullptr;
-      while(cur != nullptr){
-        if(prev == nullptr);
-
-        else{
-          if(prev->price >= cur->price)
-            return false;
-
-          else if(prev->time <= cur->time)
-            return false;
-        }// else
-
-        prev = cur;
+      while(cur->next != nullptr){
+      
+        if(cur->price >= cur->next->price || cur->time <= cur->next->time)
+          return false; 
+        
+   
+              
+        //cout<<"i: "<<i << " "<< _size << endl;
         cur = cur->next;
       }// while
 
@@ -481,13 +496,31 @@ class TravelOptions{
      * status: TODO
      */
     bool insert_pareto_sorted(double price, double time) {
-      if(!is_pareto_sorted()) return false;
+      
+      if(!is_pareto_sorted())
+       return false;
+
+      if(front == nullptr){
+        front = new Node(price,time,nullptr);
+        return true;
+      }// if
+
+      Node* prev = nullptr;
+      Node* cur = front;
+      while( cur != nullptr){
+        if(prev == nullptr);
+
+        else{
+          
+
+        }// else
 
 
+        prev = cur;
+        cur = cur->next;
+      }// while
 
-            // your code here!
-
-
+    
       return true;
     }
 
