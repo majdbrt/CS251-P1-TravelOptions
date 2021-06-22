@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
   TravelOptions *options_p, *options_p2, *options_p3;
 
   std::vector<std::pair<double, double>>
-	vec{ {1, 9}, {2,  8}, {3, 9}, 
+	vec{ {1, 9}, {2,  8}, {3, 7}, 
 		{4, 6}, {5, 5}, {6, 4}, 
 		{7, 3}, {8, 2} };
 
@@ -68,13 +68,16 @@ int main(int argc, char *argv[]){
      std::cout << "PARETO - SORTED!" << std::endl;
   else 
      std::cout << "NOT PARETO-SORTED" << std::endl;
-
+/*
   if(options_p->insert_sorted(22.0, 9.7))
      std::cout << "INSERT_SORTED WORKED!" << std::endl;
-
-  if(options_p->insert_pareto_sorted(21.0, 9.7))
+     */
+cout<< "hello" << endl;
+  if(options_p->insert_pareto_sorted(1,6 ))
      std::cout << "INSERT_PARETO_SORTED WORKED!" << std::endl;
+cout<< "bye" << endl;
 
+  options_p->display();
   options_p3= options_p->union_pareto_sorted(*options_p2);
 
   if(options_p3->prune_sorted())

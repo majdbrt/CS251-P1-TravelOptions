@@ -361,8 +361,6 @@ class TravelOptions{
       
         if(cur->price >= cur->next->price || cur->time <= cur->next->time)
           return false; 
-        
-   
               
         //cout<<"i: "<<i << " "<< _size << endl;
         cur = cur->next;
@@ -502,25 +500,59 @@ class TravelOptions{
 
       if(front == nullptr){
         front = new Node(price,time,nullptr);
+        _size++;
         return true;
       }// if
+
+      bool inserted = false;
 
       Node* prev = nullptr;
       Node* cur = front;
       while( cur != nullptr){
-        if(prev == nullptr);
+        if(prev == nullptr){
 
+         if(compare(price, time, cur->price, cur->time) == better || price < cur->price && time > cur->time){
+           cout<< "chao"<< endl;
+           Node* newNode = new Node(price, time, cur);
+          front = newNode;
+          inserted = true;
+          _size++;
+
+          if(compare(price, time, cur->price, cur->time) == better){
+            Node* temp = cur;
+            front->next = cur->next;
+            delete temp;
+            cur = front;
+          }// if
+         }// if
+
+        }// if
         else{
+          if(!inserted && (price > prev->price && price < cur->price && time< prev->time && time > cur->time  || compare(price, time, cur->price, cur->time) == better)){
+            cout<< " choe" << endl;
+            Node* newNode = new Node(price,time, cur);
+            prev->next = newNode;
+            prev = newNode;
+            _size++;
+            inserted = true;
+          }// if
           
+          if(compare(price, time, cur->price, cur->time) == better ){
+            Node* temp = cur;
+             
+            prev->next = cur->next;
+            cur = prev;
+            delete temp;
+            
+            _size--;
+          }// if
 
         }// else
-
 
         prev = cur;
         cur = cur->next;
       }// while
 
-    
       return true;
     }
 
