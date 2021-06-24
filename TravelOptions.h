@@ -271,32 +271,15 @@ class TravelOptions{
     * status: TODO
     */
     bool is_sorted()const{
-      
-      if(front == nullptr){
-        cout<<"is sorted"<< endl;
- return true;
-      }
-       
-
-      Node* prev = nullptr;
       Node* cur = front;
 
-      while(cur != nullptr){
-        if(prev == nullptr);
-
-        else if(cur->next == nullptr);
-
-        else{
-          if(prev->price > cur->price)
+      while(cur != nullptr && cur->next != nullptr){
+        if(cur->price > cur->next->price)
+          return false;
+        else if(cur->price == cur->next->price){
+          if(cur->time > cur->next->time)
             return false;
-
-          else if(prev->price == cur->price){
-            if(prev->time > cur->time)
-              return false;
-          }// else if
-        }// else
-
-        prev = cur;
+        }
         cur = cur->next;
       }// while
 
