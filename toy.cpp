@@ -20,9 +20,9 @@ int main(int argc, char *argv[]){
   TravelOptions *options_p, *options_p2, *options_p3;
 
   std::vector<std::pair<double, double>>
-	vec{ {1, 9}, {2,  8}, {3, 7}, 
-		{4, 6}, {5, 5}, {6, 4}, 
-		{7, 3}, {8, 2} };
+	vec{ {1, 9}, {2, 8}, 
+		{3, 7}, {4, 6}, {5, 5}, 
+		{6, 3}, {7, 2} };
 
   std::vector<std::pair<double, double>> *vec2;
 
@@ -71,17 +71,22 @@ int main(int argc, char *argv[]){
 /*
   if(options_p->insert_sorted(22.0, 9.7))
      std::cout << "INSERT_SORTED WORKED!" << std::endl;
-     */
-cout<< "hello" << endl;
-  if(options_p->insert_pareto_sorted(1,6 ))
+
+  if(options_p->insert_pareto_sorted(21.0, 9.7))
      std::cout << "INSERT_PARETO_SORTED WORKED!" << std::endl;
-cout<< "bye" << endl;
+*/
+cout<<"h"<< endl;
+options_p->display();
+options_p2->display();
 
-  options_p->display();
   options_p3= options_p->union_pareto_sorted(*options_p2);
+  options_p3->display();
+cout<< "hello"<< endl;
 
-  if(options_p3->prune_sorted())
+  if(options_p3 != nullptr &&options_p3->prune_sorted())
      std::cout << "prune_sorted worked!" << std::endl;
+
+cout<< "bye"<< endl;
 
   delete options_p3;
 
