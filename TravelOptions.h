@@ -415,90 +415,40 @@ class TravelOptions{
       
       if(!is_sorted()) return false;
 
-      bool inserted = false;
-      
       if(front == nullptr){
         front = new Node(price, time, nullptr);
-        inserted = true;
         _size++;
-      }// if
+        return true;
+      }
 
-      else{
-        Node* prev = nullptr;
-        Node* cur = front;
-
-        while(cur->next != nullptr){
-          if(prev == nullptr ){
-            if(price < cur->price && !inserted){
-              Node* newNode = new Node(price, time, cur);
-              front = newNode;
-              inserted = true;
-              _size++;
-            }// if
-
-            else if(price == cur->price && !inserted){
-              if(time < cur->time){
-                Node* newNode = new Node(price, time, cur);
-                front = newNode;
-                inserted = true;
-                _size++;
-              }// if
-            }// else if
-          }// if
-
-          else{
-            if(price < cur->price && !inserted){
-              Node* newNode = new Node(price, time, cur);
-              prev->next = newNode;
-              inserted = true;
-              _size++;
-            }// if
-
-            else if(price == cur->price && !inserted){
-              if(time < cur->time){
-                Node* newNode = new Node(price, time, cur);
-                prev->next = newNode;
-                inserted = true;
-                _size++;
-              }// if
-            }// else if
-          }// else
-        
-          prev = cur;
-          cur = cur->next;
-        }// while
-
-        if(price > cur-> price && !inserted){
-          Node* newNode = new Node(price, time, nullptr);
-          cur->next = newNode;
-          inserted = true;
-          _size++;
-        }// if
-
-        else if( price == cur->price && !inserted){
-          if(time >= cur->time){
-            Node* newNode = new Node(price, time, nullptr);
-            cur->next = newNode;
-            inserted = true;
-            _size++;
-          }// if
-
-          else{
-            Node* newNode = new Node(price, time, cur);
-            prev->next = newNode;
-            inserted = true;
-            _size++;
-          }// else
-        }// else if
-
-        else if(price < cur->price && !inserted){
+      Node* cur = front;
+      Node* nextP = cur->next;
+      while(cur != nullptr){
+        if(cur == front && (price < cur->price || (price == cur->price && time < cur->time)) ){
           Node* newNode = new Node(price, time, cur);
-          prev->next = newNode;
+          front = newNode;
           _size++;
+          return true;
+        }// if
+        if(nextP != nullptr && ((price > cur->price && price < nextP->price) 
+        || (price == cur->price && time >= cur->time) || 
+        (price == nextP->price && time < nextP->time))){
+          Node* newNode = new Node(price, time, nextP);
+          cur->next = newNode;
+          _size++;
+          return true;
         }
-      }// else
+        if(nextP == nullptr && (price > cur->price || (price == cur->price && time >= cur->time))){
+          Node* newNode = new Node(price, time, nextP);
+          cur->next = newNode;
+          _size++;
+          return true;
+        }
 
-      
+        cur = nextP;
+        nextP = nextP->next;
+      }// while
+
        return true;
     }
 
@@ -654,7 +604,7 @@ class TravelOptions{
                 push_back(cur2,curU);
                 u->_size++;
               }
-            }
+            }// else if
             /*
             curU = new Node(cur1->price, cur1->time, nullptr);
             curU = curU->next;
@@ -859,6 +809,7 @@ class TravelOptions{
       jps->insert_pareto_sorted(curJ->price, curJ->time);
       curJ = curJ->next;
     }// while
+
     return jps;  // placeholder to make the compiler happy
   }
 
@@ -901,6 +852,22 @@ class TravelOptions{
 
  	if(!is_pareto_sorted() || !other.is_pareto_sorted())
 	  return nullptr;
+    /*
+    TravelOptions* jpm = new TravelOptions();
+    
+    Node* cur1 = this->front;
+    Node* cur2 = other.front;
+    Node* curJ = jpm->front;
+    
+    while(cur1 != nullptr || cur2 != nullptr){
+      if(cur1 != nullptr && cur2 != nullptr){
+        
+
+      }// if
+      cur1 = cur1->next;
+      cur2 = cur2->next;
+    }// while
+*/
 
    	return nullptr;
    }
@@ -946,7 +913,7 @@ class TravelOptions{
 	  return nullptr;
 
 
-
+ TravelOptions* jps = new TravelOptions();
 
         return nullptr;  // placeholder to make compiler happy with skeleton
 
