@@ -180,6 +180,9 @@ class TravelOptions{
       }
     }
 
+    // remove_dominated
+    // removes dominted nodes after target
+    //
     int remove_dominated(Node* &target) const{
       Node* prev = target;
       Node* cur = target->next;
@@ -815,15 +818,49 @@ class TravelOptions{
    *    well-defined (also empty).  An empty option list is NOT the same as a null pointer though -- you should still return
    *   a pointer to a new TravelOptions object -- that object just happens to have an empty list.
    */
-   TravelOptions * join_plus_plus(const TravelOptions &other) const {
+   TravelOptions * join_plus_plus(const TravelOptions &other) const{
 
-	
+    // pareto sorted joined list
+    TravelOptions* jps = new TravelOptions();
+    // non-pareto-sorted joined list
+    TravelOptions* j = new TravelOptions();
+    
+    Node* cur1 = this->front;
+    Node* cur2 = other.front;
 
-      return nullptr;  // placeholder to make the compiler happy
+    if(this->_size >= other._size){
+      while(cur1 != nullptr){
+        Node* temp = cur2;
+        while(temp != nullptr){
+          j->push_front(cur1->price + temp->price, cur1->time + temp->time);
+          temp = temp->next;
+        }// while
+        if(cur2 == nullptr)
+          j->push_front(cur1->price, cur1->time);
+        cur1 = cur1->next;
+      }// while
+    }// if
+    
+    else{
+      while(cur2 != nullptr){
+        Node* temp = cur1;
+        while(temp != nullptr){
+          j->push_front(cur2->price + temp->price, cur2->time + temp->time);
+          temp = temp->next;
+        }// while
+        if(cur1 == nullptr)
+          j->push_front(cur2->price, cur2->time);
+        cur2 = cur2->next;
+      }// while
+    }// else
 
-
-
-   }
+    Node* curJ = j->front;
+    while(curJ != nullptr){
+      jps->insert_pareto_sorted(curJ->price, curJ->time);
+      curJ = curJ->next;
+    }// while
+    return jps;  // placeholder to make the compiler happy
+  }
 
 
 
