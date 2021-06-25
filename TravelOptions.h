@@ -572,7 +572,7 @@ class TravelOptions{
           _size++;
           return true;
         }// if
-        
+
         prev = cur;
         cur = cur->next;
       }// while
@@ -742,12 +742,37 @@ class TravelOptions{
        if(!is_sorted()) 
         return false;
 
+      if(front == nullptr)
+        return true;
 
+      Node* cur = front;
+      Node* nextN = cur->next;
 
+      while(nextN != nullptr){
+        if(cur == front && compare(cur->price, cur->time, nextN->price, nextN->time) ==  worse){
+          Node* temp = cur;
+          cur = cur->next;
+          front = cur;
+          nextN = cur->next;
+          delete temp;
+          _size--;
+          continue;
+        }// if
 
+        if(compare(cur->price, cur->time, nextN->price, nextN->time) ==  equal || compare(cur->price, cur->time, nextN->price, nextN->time) ==  better){
+          Node* temp = nextN;
+          nextN = nextN->next;
+          cur->next = nextN;
+          delete temp;
+          _size--;
+          continue;
+        }// if
+
+        cur = nextN;
+        nextN = cur->next;
+      }// while
 
        return true;
-       
     }
 
 
