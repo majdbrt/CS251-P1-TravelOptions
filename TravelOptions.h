@@ -180,6 +180,27 @@ class TravelOptions{
       }
     }
 
+    int remove_dominated(Node* &target) const{
+      Node* prev = target;
+      Node* cur = target->next;
+      int removed = 0;
+
+      while(cur!= nullptr){
+        
+        if (compare(target->price, target->time, cur->price, cur->time) == better){
+          Node* temp = cur;
+          cur = cur->next;
+          prev->next = cur;
+          delete temp;
+          removed++;
+          continue;
+        }
+        prev = cur;
+        cur = cur->next;
+      }// while
+      return removed;
+    }
+
   public:
     
     
@@ -359,10 +380,9 @@ class TravelOptions{
       Node* cur = front;
       while(cur->next != nullptr){
       
-        if(cur->price >= cur->next->price || cur->time <= cur->next->time){
-          cout<<"k"<< endl;
+        if(cur->price >= cur->next->price || cur->time <= cur->next->time)
           return false;
-        }
+        
               
         //cout<<"i: "<<i << " "<< _size << endl;
         cur = cur->next;
@@ -510,57 +530,49 @@ class TravelOptions{
        return false;
 
       if(front == nullptr){
-        front = new Node(price,time,nullptr);
+        front = new Node(price, time, nullptr);
         _size++;
         return true;
       }// if
 
-      bool inserted = false;
-
       Node* prev = nullptr;
       Node* cur = front;
-      while( cur != nullptr){
-        if(prev == nullptr){
 
-         if(compare(price, time, cur->price, cur->time) == better || price < cur->price && time > cur->time){
-           cout<< "chao"<< endl;
-           Node* newNode = new Node(price, time, cur);
+      while(cur != nullptr){
+        if(prev == nullptr && (price < cur->price && time > cur->time || compare(price,time, cur->price, cur->time) == better)){
+          Node* newNode = new Node(price, time, cur);
           front = newNode;
-          inserted = true;
+          cur = newNode;
           _size++;
-
-          if(compare(price, time, cur->price, cur->time) == better){
-            Node* temp = cur;
-            front->next = cur->next;
-            delete temp;
-            cur = front;
-            _size--;
-          }// if
-         }// if
-
+          _size -= remove_dominated(newNode);
+          return true;
         }// if
-        else{
-          if(!inserted && (price > prev->price && price < cur->price && time< prev->time && time > cur->time  || compare(price, time, cur->price, cur->time) == better)){
-            cout<< " choe" << endl;
-            Node* newNode = new Node(price,time, cur);
-            prev->next = newNode;
-            prev = newNode;
-            _size++;
-            inserted = true;
-          }// if
-          
-          if(compare(price, time, cur->price, cur->time) == better ){
-            Node* temp = cur;
-             
-            prev->next = cur->next;
-            cur = prev;
-            delete temp;
-            
-            _size--;
-          }// if
+        
+        if(prev != nullptr && price > prev->price && time < prev->time && price < cur->price && time > cur->price ){
+          Node* newNode = new Node(price, time, cur);
+          prev->next = newNode;
+          _size++;
+          cur = newNode;
+          _size -= remove_dominated(newNode);
+          return true;
+        }// if
 
-        }// else
+        if(compare(price, time, cur->price, cur->time) == better){
+          Node* newNode = new Node(price, time, cur);
+          prev->next = newNode;
+          cur = newNode;
+          _size++;
+          _size -= remove_dominated(newNode);
+          return true;
+        }// if
 
+        if(cur->next == nullptr && price > cur->price && time < cur->time){
+          Node* newNode = new Node(price, time, nullptr);
+          cur->next = newNode;
+          _size++;
+          return true;
+        }// if
+        
         prev = cur;
         cur = cur->next;
       }// while
