@@ -146,28 +146,31 @@ class TravelOptions{
        return compare(a->price, a->time, b->price, b->time);
     }
 
+    // dublicate_OR_Dominated
+    // a helper function for is_pareto().
+    // check if the two adjecent nodes are equal, better
+    // or worse than each other and return bool value.
+    //
     bool dublicate_OR_Dominated(Node* a) const{
       if(a == nullptr || a->next == nullptr)
         return false;
 
       Node* cur = a->next;
       while(cur != nullptr){
-      
         
         if(compare(a, cur) == equal ||compare(a, cur) == worse ||compare(a, cur) == better){
           return true;
         }// if
-        
- /*
-        if(a->price >= cur->price && a->time >= cur->time)
-          return true;
-*/
+
         cur = cur->next;
       }// while
 
       return false;
     }// dublicate_exist
 
+    // push_back
+    // inserts a new node at the end of the linked list.
+    //
     void push_back(Node* copy, Node* &cur) const{
       if(cur == nullptr){
         cur = new Node(copy->price, copy->time, nullptr);
@@ -192,9 +195,9 @@ class TravelOptions{
       }
     }
 
-
     // remove_dominated
-    // removes dominted nodes after target
+    // a helper function for insert_pareto_sorted()
+    // remove dominted nodes after target
     //
     int remove_dominated(Node* &target) const{
       Node* prev = target;
@@ -204,36 +207,47 @@ class TravelOptions{
       while(cur!= nullptr){
         
         if (compare(target->price, target->time, cur->price, cur->time) == better){
+
           Node* temp = cur;
           cur = cur->next;
           prev->next = cur;
           delete temp;
           removed++;
           continue;
-        }
+        }// if
+
         prev = cur;
         cur = cur->next;
       }// while
+
       return removed;
     }
 
+    // getMaxTime
+    // a helper function for join_plus_max().
+    // return the maximum time of two nodes.
     int getMaxTime(Node* a, Node* b) const{
+
       if(a->time >= b->time)
         return a->time;
+
       return b->time;
     }
 
-    
+    // getSmallNode
+    // a helper function for join_plus_max().
+    // takes two nodes and returns the better/cheaper (smaller) node.
+    //
     Node* getSmallNode(Node* a, Node* b, int &listNumber) const{
       if(compare(a,b) == better){
         listNumber = 1;
         return a;
-      } 
+      }// if 
         
       else if(compare(b,a) == better){
         listNumber = 2;
         return b;
-      }
+      }// else if
         
       listNumber = 0;
       return nullptr;
@@ -333,12 +347,13 @@ class TravelOptions{
       Node* cur = front;
 
       while(cur != nullptr && cur->next != nullptr){
+
         if(cur->price > cur->next->price)
           return false;
-        else if(cur->price == cur->next->price){
-          if(cur->time > cur->next->time)
+
+        else if(cur->price == cur->next->price && cur->time > cur->next->time)
             return false;
-        }
+
         cur = cur->next;
       }// while
 
@@ -371,26 +386,11 @@ class TravelOptions{
         
         if(dublicate_OR_Dominated(cur))
           return false;
-          
-         /*
-         Node* temp = cur->next;
-         Node* target = cur;
-         while(temp != nullptr){
-           if (target->price == temp->price && target->time == temp->time)
-            return false;
-          
-          if(target->price >= temp->price && target->time >= temp->time)
-            return false;
-          if(target->price <= temp->price && target->time <= temp->time )
-            return false;
-
-          temp = temp->next;
-         }// while
-         */
+      
         cur = cur->next;
       }// while
-	return true;
 
+    	return true;
     }
 
     /**
@@ -414,15 +414,12 @@ class TravelOptions{
       if(_size == 0)
         return true;
 
-//int i = 0;
       Node* cur = front;
       while(cur->next != nullptr){
       
         if(cur->price >= cur->next->price || cur->time <= cur->next->time)
           return false;
         
-              
-        //cout<<"i: "<<i << " "<< _size << endl;
         cur = cur->next;
       }// while
 
@@ -458,27 +455,36 @@ class TravelOptions{
 
       Node* cur = front;
       Node* nextP = cur->next;
+
       while(cur != nullptr){
-        if(cur == front && (price < cur->price || (price == cur->price && time < cur->time)) ){
+        if(cur == front && (price < cur->price 
+        || (price == cur->price && time < cur->time)) ){
+
           Node* newNode = new Node(price, time, cur);
           front = newNode;
           _size++;
           return true;
         }// if
-        if(nextP != nullptr && ((price > cur->price && price < nextP->price) 
+
+        if(nextP != nullptr 
+        && ((price > cur->price && price < nextP->price) 
         || (price == cur->price && time >= cur->time) || 
         (price == nextP->price && time < nextP->time))){
+
           Node* newNode = new Node(price, time, nextP);
           cur->next = newNode;
           _size++;
           return true;
-        }
-        if(nextP == nullptr && (price > cur->price || (price == cur->price && time >= cur->time))){
+        }// if
+
+        if(nextP == nullptr && (price > cur->price 
+        || (price == cur->price && time >= cur->time))){
+
           Node* newNode = new Node(price, time, nextP);
           cur->next = newNode;
           _size++;
           return true;
-        }
+        }// if
 
         cur = nextP;
         nextP = nextP->next;
@@ -599,6 +605,7 @@ class TravelOptions{
       while(cur1 != nullptr || cur2 != nullptr){
 
         if(cur1 != nullptr && cur2 != nullptr){
+
           if(compare( cur1->price, cur1->time, cur2->price, cur2->time ) ==  better
           || compare( cur1->price, cur1->time, cur2->price, cur2->time ) ==  equal){
             
@@ -607,65 +614,73 @@ class TravelOptions{
               curU = u->front;
               u->_size++;
             }// if
-            else
+
+            else{
               push_back(cur1, curU);
               u->_size++;
+            }// else              
           }// if
 
           else if(compare( cur1->price, cur1->time, cur2->price, cur2->time ) ==  worse){
+
             if(u->front == nullptr){
               push_back(cur2, u->front);
               curU = u->front;
               u->_size++;
             }// if
+
             else
               push_back(cur2, curU);
               u->_size++;
           }// else if
             
           else if(cur1->price < cur2->price && cur1->time > cur2->time){
+
             if(u->front == nullptr){
               push_back(cur1, u->front);
               curU = u->front;
               push_back(cur2,curU);
               u->_size+=2;
             }// if
+
             else{
+
               if(compare(curU->price, curU->time, cur1->price, cur1->time) != better){
                 push_back(cur1,curU);
                 u->_size++;
               }
+
               if(compare(curU->price, curU->time, cur2->price, cur2->time) != better){
                 push_back(cur2,curU);
                 u->_size++;
               }
             }// else if
-            /*
-            curU = new Node(cur1->price, cur1->time, nullptr);
-            curU = curU->next;
-            curU = new Node(cur2->price, cur2->time, nullptr);
-            */
-            //curU = curU->next;
+         
           }//else if
 
           else if(cur1->price > cur2->price && cur1->time < cur2->time){
+
             if(u->front == nullptr){
+
               push_back(cur2, u->front);
               curU = u->front;
               push_back(cur1,curU);
               u->_size+=2;
             }// if
+
             else{
+
               if(compare(curU->price, curU->time, cur2->price, cur2->time) != better){
                 push_back(cur2,curU);
                 u->_size++;
-              }
+              }// if
+
               if(compare(curU->price, curU->time, cur1->price, cur1->time) != better){
                 push_back(cur1,curU);
                 u->_size++;
-              }
-            }
-            //curU = curU->next;
+              }// if
+
+            }// else
           }//else if
 
           cur1 = cur1->next;
@@ -673,45 +688,39 @@ class TravelOptions{
         }// if
 
         else if(cur1 == nullptr){
+
           if(u->front == nullptr){
               push_back(cur2, u->front);
               curU = u->front;
               u->_size++;
             }// if
+
             else{
               push_back(cur2,curU);
               u->_size++;
             }
-          /*
-          curU = new Node(cur2->price, cur2->time, nullptr);
-          curU = curU->next;
-*/
+
           cur2 = cur2->next;
         }// else if
 
         else if(cur2 == nullptr){
+
           if(u->front == nullptr){
               push_back(cur1, u->front);
               curU = u->front;
               u->_size++;
             }// if
+
             else{
               push_back(cur1,curU);
               u->_size++;
-            }
+            }// else
 
           cur1 = cur1->next;
         }// else if
         
       }// while
-      /*
-    curU = u->front;
-    while(curU!= nullptr){
-      cout<< "printing";
-      cout<< curU->price<< " "<< curU->time<< endl;
-      curU = curU->next;
-    }
-*/
+
       return u;
     }
     
@@ -737,20 +746,26 @@ class TravelOptions{
       Node* nextN = cur->next;
 
       while(nextN != nullptr){
+
         if(cur == front && compare(cur->price, cur->time, nextN->price, nextN->time) ==  worse){
+
           Node* temp = cur;
           cur = cur->next;
           front = cur;
           nextN = cur->next;
+
           delete temp;
           _size--;
           continue;
         }// if
 
-        if(compare(cur->price, cur->time, nextN->price, nextN->time) ==  equal || compare(cur->price, cur->time, nextN->price, nextN->time) ==  better){
+        if(compare(cur->price, cur->time, nextN->price, nextN->time) ==  equal 
+        || compare(cur->price, cur->time, nextN->price, nextN->time) ==  better){
+
           Node* temp = nextN;
           nextN = nextN->next;
           cur->next = nextN;
+
           delete temp;
           _size--;
           continue;
@@ -814,25 +829,33 @@ class TravelOptions{
     Node* cur2 = other.front;
 
     if(this->_size >= other._size){
+
       while(cur1 != nullptr){
+
         Node* temp = cur2;
+
         while(temp != nullptr){
           j->push_front(cur1->price + temp->price, cur1->time + temp->time);
           temp = temp->next;
         }// while
+
         if(cur2 == nullptr)
           j->push_front(cur1->price, cur1->time);
+
         cur1 = cur1->next;
       }// while
     }// if
     
     else{
+
       while(cur2 != nullptr){
         Node* temp = cur1;
+        
         while(temp != nullptr){
           j->push_front(cur2->price + temp->price, cur2->time + temp->time);
           temp = temp->next;
         }// while
+
         if(cur1 == nullptr)
           j->push_front(cur2->price, cur2->time);
         cur2 = cur2->next;
@@ -840,6 +863,7 @@ class TravelOptions{
     }// else
 
     Node* curJ = j->front;
+
     while(curJ != nullptr){
       jps->insert_pareto_sorted(curJ->price, curJ->time);
       curJ = curJ->next;
@@ -906,17 +930,18 @@ class TravelOptions{
             push_back(cur1->price+cur2->price,getMaxTime(cur1,cur2),jpm->front);
             curJ = jpm->front;
             jpm->_size++;
-          }
+          }// if
 
           else{
             push_back(cur1->price+cur2->price,getMaxTime(cur1,cur2), curJ);
             jpm->_size++;
-          }       
+          }// else       
           
           smallNode = getSmallNode(cur1,cur2, listNumber);
         }// if
 
         else{
+          
           if(listNumber == 1 
           && compare(smallNode->price+cur2->price,getMaxTime(smallNode,cur2), cur1->price+cur2->price,getMaxTime(cur1,cur2)) != worse){
 
@@ -1010,14 +1035,13 @@ class TravelOptions{
    TravelOptions * split_sorted_pareto(double max_price) {
     if(!is_pareto_sorted())
 	    return nullptr;
-
+      
     TravelOptions* expensiveList = new TravelOptions();
 
     Node* cur = this->front;
     Node* prev = nullptr;
    
     while(cur != nullptr){
-      cout<< "current price: " << cur->price<< endl;
 
       if(max_price <= cur->price){
         expensiveList->front = cur;
@@ -1027,7 +1051,7 @@ class TravelOptions{
 
         else
           this->front = nullptr;
-        
+
         return expensiveList; 
       }// if
 
