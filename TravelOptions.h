@@ -1008,15 +1008,34 @@ class TravelOptions{
    * status:  TODO
    */
    TravelOptions * split_sorted_pareto(double max_price) {
+    if(!is_pareto_sorted())
+	    return nullptr;
 
-	if(!is_pareto_sorted())
-	  return nullptr;
+    TravelOptions* expensiveList = new TravelOptions();
 
+    Node* cur = this->front;
+    Node* prev = nullptr;
+   
+    while(cur != nullptr){
+      cout<< "current price: " << cur->price<< endl;
 
- TravelOptions* jps = new TravelOptions();
+      if(max_price <= cur->price){
+        expensiveList->front = cur;
 
-        return nullptr;  // placeholder to make compiler happy with skeleton
+        if(prev != nullptr)
+          prev->next = nullptr;
 
+        else
+          this->front = nullptr;
+        
+        return expensiveList; 
+      }// if
+
+      prev = cur;
+      cur = cur->next;
+    }// while
+
+    return expensiveList;  
    }
 
    /**
