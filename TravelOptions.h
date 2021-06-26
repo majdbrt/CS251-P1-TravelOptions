@@ -180,6 +180,19 @@ class TravelOptions{
       }
     }
 
+    void push_back(int price, int time, Node* &cur) const{
+      if(cur == nullptr){
+        cur = new Node(price, time, nullptr);
+        
+      }
+      else{
+        Node* newNode = new Node(price, time, nullptr);
+        (cur)->next = newNode;
+        cur = newNode;
+      }
+    }
+
+
     // remove_dominated
     // removes dominted nodes after target
     //
@@ -202,6 +215,28 @@ class TravelOptions{
         cur = cur->next;
       }// while
       return removed;
+    }
+
+    int getMaxTime(Node* a, Node* b) const{
+      if(a->time >= b->time)
+        return a->time;
+      return b->time;
+    }
+
+    
+    Node* getSmallNode(Node* a, Node* b, int &listNumber) const{
+      if(compare(a,b) == better){
+        listNumber = 1;
+        return a;
+      } 
+        
+      else if(compare(b,a) == better){
+        listNumber = 2;
+        return b;
+      }
+        
+      listNumber = 0;
+      return nullptr;
     }
 
   public:
@@ -849,27 +884,92 @@ class TravelOptions{
    *         so they can get home in say 7 hours?  Think about it!  The MAX function is important!
    */
    TravelOptions * join_plus_max(const TravelOptions &other) const {
-
- 	if(!is_pareto_sorted() || !other.is_pareto_sorted())
-	  return nullptr;
-    /*
+    if(!is_pareto_sorted() || !other.is_pareto_sorted())
+	    return nullptr;
     TravelOptions* jpm = new TravelOptions();
     
     Node* cur1 = this->front;
     Node* cur2 = other.front;
     Node* curJ = jpm->front;
+
+    // smallNode: copy the smallest better node from two nodes
+    Node* smallNode = nullptr;
     
+    // listNumber: figure out if smallNode saved belongs to list 1 or list 2, if neither return 0;
+    int listNumber = 0;
+
     while(cur1 != nullptr || cur2 != nullptr){
       if(cur1 != nullptr && cur2 != nullptr){
-        
 
+        if(smallNode == nullptr){
+          if(jpm->front == nullptr){
+            push_back(cur1->price+cur2->price,getMaxTime(cur1,cur2),jpm->front);
+            curJ = jpm->front;
+            jpm->_size++;
+          }
+
+          else{
+            push_back(cur1->price+cur2->price,getMaxTime(cur1,cur2), curJ);
+            jpm->_size++;
+          }       
+          
+          smallNode = getSmallNode(cur1,cur2, listNumber);
+        }// if
+
+        else{
+          if(listNumber == 1 
+          && compare(smallNode->price+cur2->price,getMaxTime(smallNode,cur2), cur1->price+cur2->price,getMaxTime(cur1,cur2)) != worse){
+
+            push_back(smallNode->price+cur2->price,getMaxTime(smallNode,cur2), curJ);
+            jpm->_size++;
+          }// if
+
+          else if(listNumber == 2 
+          && compare(smallNode->price+cur1->price,getMaxTime(smallNode,cur1), cur1->price+cur2->price,getMaxTime(cur1,cur2)) != worse){
+
+            push_back(smallNode->price+cur1->price,getMaxTime(smallNode,cur1), curJ);
+            jpm->_size++;
+          }// else if
+
+          if(listNumber == 1
+          && compare(cur1->price+cur2->price, getMaxTime(cur1,cur2),smallNode->price+cur2->price,getMaxTime(smallNode,cur2)) != worse){
+
+            push_back(cur1->price+cur2->price, getMaxTime(cur1,cur2), curJ);
+            jpm->_size++;
+
+            smallNode = getSmallNode(cur1,cur2, listNumber);
+          }// if
+          
+          else if(listNumber == 2
+          && compare(cur1->price+cur2->price, getMaxTime(cur1,cur2),smallNode->price+cur1->price,getMaxTime(smallNode,cur1)) != worse){
+
+            push_back(cur1->price+cur2->price, getMaxTime(cur1,cur2), curJ);
+            jpm->_size++;
+
+            smallNode = getSmallNode(cur1,cur2, listNumber);
+          }// else if
+        }// else
+
+        cur1 = cur1->next;
+        cur2 = cur2->next;
       }// if
-      cur1 = cur1->next;
-      cur2 = cur2->next;
-    }// while
-*/
 
-   	return nullptr;
+      else if(cur1 == nullptr){
+        push_back(cur2, curJ);
+        jpm->_size++;
+
+        cur2 = cur2->next;
+      }// else if
+
+      else{
+        push_back(cur1, curJ);
+        jpm->_size++;
+
+        cur1 = cur1->next;
+      }// else
+    }// while
+
+    return jpm;
    }
 
    /**
